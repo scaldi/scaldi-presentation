@@ -20,6 +20,8 @@
   <!-- For syntax highlighting -->
   <link rel="stylesheet" href="lib/css/zenburn.css">
 
+  <link href="http://fonts.googleapis.com/css?family=Oxygen+Mono" rel="stylesheet" type="text/css">
+
   <!-- If the query includes 'print-pdf', include the PDF print sheet -->
   <script>
     if( window.location.search.match( /print-pdf/gi ) ) {
@@ -55,13 +57,103 @@
         </p>
       </section>
 
-      <section data-background="#9BC585" >
+      <section data-background="#FEE5AD" data-transition="linear">
+        <h2>Only <strong>3</strong> Concepts</h2>
+      </section>
+
+      <section data-background="#FEE5AD">
+        <h2>Injector</h2>
+        A container for the bindings
+      </section>
+
+      <section data-background="#FEE5AD" data-markdown>
+        <script type="text/template">
+          ## Module
+
+          * A place where you define the bindings
+          * DSL for bindings
+          * extends `Injector`
+        </script>
+      </section>
+
+      <section data-background="#FEE5AD">
+        <h2>Injectable</h2>
+
+        DSL for injection
+
+        <pre><code data-trim contenteditable>
+inject [SomeClass]
+        </code></pre>
+
+        <span class="fragment fade-in"data-fragment-index="1">
+          ... or this one ...
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable>
+inject [Database] (identified by 'remote and by default new Riak)
+        </code></pre>
+      </section>
+
+      <section data-background="#FEE5AD">
+        <h2>Injector&nbsp;&nbsp;and&nbsp;&nbsp;Injectable</h2>
+
+        <pre><code data-trim contenteditable>
+class OfficialMessageService(implicit inj: Injector)
+          extends MessageService with Injectable {
+
+  val officialGreeting =
+    inject [String] (identified by "greeting.official")
+
+  def getGreetMessage(name: String) =
+    s"$officialGreeting, $name!"
+}
+        </code></pre>
+
+        <span class="fragment fade-in" data-fragment-index="1">
+          and Module of course
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable>
+class UserModule extends Module {
+  bind [MessageService] to new OfficialMessageService
+
+  binding identifiedBy "greeting.official" to "Welcome"
+}
+        </code></pre>
+      </section>
+
+      <section data-background="#F7A541" data-transition="linear">
+        <h2>&#9733; Something Special &#9733;</h2>
+      </section>
+
+      <section data-background="#F7A541">
+        <h2>Conditions</h2>
+
+        <pre><code data-trim contenteditable>
+class UserModule extends Module {
+  bind [MessageService] when (inDevMode or inTestMode) to
+    new SimpleMessageService
+
+  bind [MessageService] when inProdMode to
+    new OfficialMessageService
+}
+        </code></pre>
+
+        <pre class="fragment roll-in"><code data-trim contenteditable>
+def inDevMode(implicit inj: Injector) = {
+  val mode = inject [Mode]
+  Condition(mode == Dev)
+}
+        </code></pre>
+      </section>
+
+      <section data-background="#9BC585" data-transition="linear">
         <a href="http://www.playframework.com/">
           <img src="my/img/play.svg" class="logo">
         </a>
       </section>
 
-      <section data-background="#78B8BC">
+      <section data-background="#78B8BC" data-transition="linear">
         <a href="http://akka.io/">
           <img src="my/img/akka.png" class="logo">
         </a>
@@ -73,7 +165,7 @@
         </a>
       </section>
 
-      <section data-background="#FEE5AD" data-markdown>
+      <section data-background="#FEE5AD" data-markdown data-transition="linear">
         <script type="text/template">
           ## More Information
 
@@ -88,7 +180,7 @@
         </script>
       </section>
 
-      <section data-background="#FEE5AD">
+      <section data-background="#F7A541">
         <h1 class="fragment fade-out" data-fragment-index="1">EOF</h1>
         <h1 class="fragment roll-in" data-fragment-index="1">Thank you!</h1>
         <h2 class="fragment roll-in" data-fragment-index="2">Questions?</h2>
