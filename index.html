@@ -43,17 +43,55 @@
 </head>
 
 <body>
-
   <div class="reveal">
 
     <!-- Any section element inside of this container is displayed as a slide -->
     <div class="slides">
-      <section>
+      <section data-background="#F7A541">
         <h1>Scal<span class="di">di</span></h1>
         <h3>Lightweight Dependency Injection Library</h3>
         <p>
           <small><span class="bg-text">Created by</span>&nbsp;&nbsp;Oleg Ilyenko&nbsp;&nbsp;<a target="_blank" href="http://twitter.com/easyangel">@easyangel</a></small>
         </p>
+      </section>
+
+      <section data-background="#9BC585" >
+        <a href="http://www.playframework.com/">
+          <img src="my/img/play.svg" class="logo">
+        </a>
+      </section>
+
+      <section data-background="#78B8BC">
+        <a href="http://akka.io/">
+          <img src="my/img/akka.png" class="logo">
+        </a>
+      </section>
+
+      <section data-background="#78B8BC">
+        <a href="https://twitter.com/rolandkuhn/status/445832745554423809">
+          <img src="my/img/tweet.png" class="tweet">
+        </a>
+      </section>
+
+      <section data-background="#FEE5AD" data-markdown>
+        <script type="text/template">
+          ## More Information
+
+          * Home page: http://scaldi.org
+          * GitHub: https://github.com/scaldi
+          * Blog: http://hacking-scala.org/
+          * StackOverflow: tag [scaldi](http://stackoverflow.com/questions/ask?tags=scala,scaldi)
+          * Typesafe activator templates
+            * [Scaldi Play Example](https://typesafe.com/activator/template/scaldi-play-example)
+            * [Scaldi Akka Example](https://typesafe.com/activator/template/scaldi-akka-example)
+
+        </script>
+      </section>
+
+      <section data-background="#FEE5AD">
+        <h1 class="fragment fade-out" data-fragment-index="1">EOF</h1>
+        <h1 class="fragment roll-in" data-fragment-index="1">Thank you!</h1>
+        <h2 class="fragment roll-in" data-fragment-index="2">Questions?</h2>
       </section>
 
       <section>
@@ -376,7 +414,7 @@
       history: true,
       center: true,
 
-      theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+      theme: 'sky',//Reveal.getQueryHash().theme, // available themes are in /css/theme
       transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
 
       // Parallax scrolling
