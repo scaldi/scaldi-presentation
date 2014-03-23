@@ -93,7 +93,7 @@ inject [SomeClass]
           ... or this one ...
         </span>
 
-        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable>
 inject [Database] (identified by 'remote and by default new Riak)
         </code></pre>
       </section>
@@ -382,6 +382,73 @@ inject [Int] (identified by "db.port")
         <a href="https://twitter.com/rolandkuhn/status/445832745554423809">
           <img src="my/img/tweet.png" class="tweet">
         </a>
+      </section>
+
+      <section data-background="#78B8BC">
+        <h2>Akka&nbsp;&nbsp;Injectable</h2>
+
+        <ul>
+          <li><strong>injectActorProps</strong></li>
+          <li><strong>injectActorRef</strong></li>
+        </ul>
+
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
+class Receptionist(implicit inj: Injector)
+    extends Actor with AkkaInjectable {
+
+  val orderProcessorProps = injectActorProps [OrderProcessor]
+
+  val priceCalculator = injectActorRef [PriceCalculator]
+
+  def receive = {
+    case PlaceOrder(userName, itemId, netAmount) =>
+      val processor = context.actorOf(orderProcessorProps)
+      // ...
+  }
+}
+        </code></pre>
+      </section>
+
+      <section data-background="#78B8BC">
+        <h2>Actor Ref&nbsp;&nbsp;Factory</h2>
+
+        <ul>
+          <li>
+            Should be implicitly available
+
+            <ul class="fragment" data-fragment-index="1">
+              <li><strong>ActorContext</strong> (within an actor)</li>
+              <li><strong>ActorSystem</strong> (outside of actor)</li>
+            </ul>
+          </li>
+          <li style="padding-top: 20px" class="fragment" data-fragment-index="2">
+            <span id="create">Creates</span> and configures an actor
+
+            <ul class="fragment createsStyle" data-fragment-index="3">
+              <li>Setups correct actor hierarchy</li>
+            </ul>
+          </li>
+          <li style="padding-top: 20px" class="fragment" data-fragment-index="4">
+            Integrates with Scaldi via <strong>Props</strong>
+          </li>
+        </ul>
+      </section>
+
+      <section data-background="#78B8BC">
+        <h2>Actor&nbsp;&nbsp;Bindings</h2>
+
+        Don't forget to bind with <strong>toProvider</strong>
+
+        <pre><code data-trim contenteditable class="scala">
+class OrderModule extends Module {
+  bind [ActorSystem] to ActorSystem("ScaldiExample")
+    destroyWith (_.shutdown())
+
+  binding toProvider new Receptionist
+  binding toProvider new OrderProcessor
+  binding toProvider new PriceCalculator
+}
+        </code></pre>
       </section>
 
       <section data-background="#FEE5AD" data-markdown data-transition="linear">
