@@ -55,6 +55,10 @@
         <p>
           <small><span class="bg-text">Created by</span>&nbsp;&nbsp;Oleg Ilyenko&nbsp;&nbsp;<a target="_blank" href="http://twitter.com/easyangel">@easyangel</a></small>
         </p>
+
+        <aside class="notes">
+          I think It all started here: <a href="https://groups.google.com/forum/#!topic/liftweb/Sau5aCEvJ0M">https://groups.google.com/forum/#!topic/liftweb/Sau5aCEvJ0M</a>
+        </aside>
       </section>
 
       <section data-background="#FEE5AD" data-transition="linear">
@@ -231,10 +235,141 @@ def inDevMode(implicit inj: Injector) = {
         </code></pre>
       </section>
 
+      <section data-background="#F7A541">
+        <h2>Binding Lifecycle</h2>
+
+        <pre><code data-trim contenteditable class="scala">
+class MyModule extends Module {
+  bind [ActorSystem] to
+    ActorSystem("ScaldiExample") destroyWith (_.shutdown())
+
+  bind [Database] to new Mongo initWith (_.start())
+}
+        </code></pre>
+
+        <pre class="fragment roll-in"><code data-trim contenteditable class="scala">
+implicit val injector = new MyModule
+
+// do stuff ...
+
+injector.destroy()
+        </code></pre>
+      </section>
+
+      <section data-background="#F7A541">
+        <h2>Extensibility</h2>
+
+        <ul>
+          <li>
+            Extend almost any part of the library
+
+            <ul>
+              <li><strong>Injector</strong></li>
+              <li><strong>Condition</strong></li>
+              <li><strong>Binding</strong> and <strong>BindingWithLifecycle</strong></li>
+              <li><strong>Identifier</strong> - create your own and define how they match</li>
+            </ul>
+          </li>
+          <li style="padding-top: 25px">
+            Type classes
+
+            <ul>
+              <li><strong>CanCompose</strong> - defines how <strong>Injectors</strong> can be composed together</li>
+              <li><strong>CanBeIdentifier</strong></li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
       <section data-background="#9BC585" data-transition="linear">
         <a href="http://www.playframework.com/">
           <img src="my/img/play.svg" class="logo">
         </a>
+      </section>
+
+      <section data-background="#9BC585">
+        <h2>Create&nbsp;&nbsp;a&nbsp;&nbsp;Controller</h2>
+
+        Finally you can develop with <strong>class</strong>es and not singleton <strong>object</strong>s.
+
+        <pre><code data-trim contenteditable class="scala">
+class Application(implicit inj: Injector)
+          extends Controller with Injectable {
+
+  val messageService = inject [MessageService]
+
+  def index = Action {
+    Ok(views.html.index(
+      messageService.getGreetMessage("Test User")))
+  }
+}
+        </code></pre>
+      </section>
+
+      <section data-background="#9BC585">
+        <h2>Then&nbsp;&nbsp;Bind&nbsp;&nbsp;it</h2>
+
+        <pre><code data-trim contenteditable class="scala">
+class MyModule extends Module {
+  binding to new Application
+
+  bind [MessageService] to new OfficialMessageService
+}
+        </code></pre>
+      </section>
+
+      <section data-background="#9BC585">
+        <h2>Define&nbsp;&nbsp;<strong>Global</strong></h2>
+
+        <pre><code data-trim contenteditable class="scala">
+object Global extends GlobalSettings with ScaldiSupport {
+  def applicationModule =
+          new MyModule :: new SomeOtherModule
+}
+        </code></pre>
+      </section>
+
+      <section data-background="#9BC585">
+        <h2>Configure&nbsp;&nbsp;<strong>routes</strong></h2>
+
+        Don't forget <strong>@</strong>
+
+        <pre><code data-trim contenteditable class="scala">
+GET  /   @controllers.Application.index
+        </code></pre>
+      </section>
+
+      <section data-background="#9BC585">
+        <h2>Play&nbsp;&nbsp;Extras</h2>
+
+
+        <span>
+          Bindings
+        </span>
+
+        <pre><code data-trim contenteditable class="scala">
+inject [Application]
+inject [Mode]
+inject [Configuration]
+        </code></pre>
+
+        <span class="fragment" data-fragment-index="1">
+          Conditions
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
+bind [Thing] when (inDevMode or inTestMode or inProdMode) to
+  new SomeThing
+        </code></pre>
+
+        <span class="fragment" data-fragment-index="2">
+          All configuration properties are also available as bindings
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="2"><code data-trim contenteditable class="scala">
+inject [String] (identified by "db.host")
+inject [Int] (identified by "db.port")
+        </code></pre>
       </section>
 
       <section data-background="#78B8BC" data-transition="linear">
