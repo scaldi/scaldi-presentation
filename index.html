@@ -65,7 +65,7 @@
       </section>
 
       <section data-background="#FEE5AD" data-transition="linear">
-        <h2>Only <strong>3</strong> Concepts</h2>
+        <h2>Only <strong>3</strong> Main Concepts</h2>
       </section>
 
       <section data-background="#FEE5AD">
@@ -126,6 +126,34 @@ class UserModule extends Module {
 
   binding identifiedBy "greeting.official" to "Welcome"
 }
+        </code></pre>
+      </section>
+
+      <section data-background="#FEE5AD">
+        <h2>Bindings</h2>
+
+        <span>
+          Lazy binding
+        </span>
+
+        <pre><code data-trim contenteditable class="scala">
+bind [ActorSystem] to new ActorSystem
+        </code></pre>
+
+        <span class="fragment fade-in" data-fragment-index="1">
+          Non-lazy binding
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
+bind [Server] toNonLazy new HttpServer
+        </code></pre>
+
+        <span class="fragment fade-in" data-fragment-index="2">
+          Provider binding
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="2"><code data-trim contenteditable class="scala">
+bind [Connection] toProvider inject[Database].getConnection
         </code></pre>
       </section>
 
