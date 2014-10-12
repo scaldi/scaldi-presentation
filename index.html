@@ -217,6 +217,51 @@ trait Injector {
       </section>
 
       <section data-background="#F7A541">
+        <h2>Constructor&nbsp;&nbsp;Injection</h2>
+
+        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
+class TokenRepo(db: Database, metrics: Metrics) extends Tokens {
+  // ...
+}
+        </code></pre>
+
+        <span class="fragment fade-in" data-fragment-index="2">
+          <strong>injected</strong> macro
+        </span>
+        <pre class="fragment roll-in" data-fragment-index="2"><code data-trim contenteditable class="scala">
+bind [Tokens] to injected [TokenRepo]
+        </code></pre>
+
+        <span class="fragment fade-in" data-fragment-index="3">
+          compiled to
+        </span>
+        <pre class="fragment roll-in" data-fragment-index="3"><code data-trim contenteditable class="scala">
+bind [Tokens] to new TokenRepo(
+  db = inject [Database],
+  metrics = inject [Metrics])
+        </code></pre>
+      </section>
+
+      <section data-background="#F7A541">
+        <h2>Argument&nbsp;&nbsp;Overrides</h2>
+
+        <pre><code data-trim contenteditable class="scala">
+bind [Tokens] to injected [TokenRepo] (
+  'db -> inject [Database] ('tokensOnly))
+        </code></pre>
+
+        <span class="fragment fade-in" data-fragment-index="2">
+          compiled to
+        </span>
+
+        <pre class="fragment roll-in" data-fragment-index="2"><code data-trim contenteditable class="scala">
+bind [Tokens] to new TokenRepo(
+  db = inject [Database] ('tokensOnly),
+  metrics = inject [Metrics])
+        </code></pre>
+      </section>
+
+      <section data-background="#F7A541">
         <h2>Generics</h2>
 
         <span>
@@ -363,7 +408,9 @@ object Global extends GlobalSettings with ScaldiSupport {
       <section data-background="#9BC585">
         <h2>Configure&nbsp;&nbsp;<strong>routes</strong></h2>
 
+        <span  class="fragment" data-fragment-index="1">
         Don't forget <strong>@</strong>
+        </span>
 
         <pre><code data-trim contenteditable class="scala">
 GET  /   @controllers.Application.index
@@ -373,31 +420,44 @@ GET  /   @controllers.Application.index
       <section data-background="#9BC585">
         <h2>Play&nbsp;&nbsp;Extras</h2>
 
+        <div style="float: left; width: 450px; padding-right: 55px">
+          <span class="fragment" data-fragment-index="1">
+            Bindings
+          </span>
 
-        <span>
-          Bindings
-        </span>
-
-        <pre><code data-trim contenteditable class="scala">
+          <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
 inject [Application]
 inject [Mode]
 inject [Configuration]
-        </code></pre>
+          </code></pre>
+        </div>
 
-        <span class="fragment" data-fragment-index="1">
+        <div style="float: left; width: 450px;">
+          <span class="fragment" data-fragment-index="2">
+            Injectors
+          </span>
+
+          <pre class="fragment roll-in" data-fragment-index="2"><code data-trim contenteditable class="scala">
+def applicationModule =
+  new MyModule ::
+    new ControllerInjector
+          </code></pre>
+        </div>
+
+        <span class="fragment" data-fragment-index="3">
           Conditions
         </span>
 
-        <pre class="fragment roll-in" data-fragment-index="1"><code data-trim contenteditable class="scala">
+        <pre class="fragment roll-in" data-fragment-index="3"><code data-trim contenteditable class="scala">
 bind [Thing] when (inDevMode or inTestMode or inProdMode) to
   new SomeThing
         </code></pre>
 
-        <span class="fragment" data-fragment-index="2">
+        <span class="fragment" data-fragment-index="4">
           All configuration properties are also available as bindings
         </span>
 
-        <pre class="fragment roll-in" data-fragment-index="2"><code data-trim contenteditable class="scala">
+        <pre class="fragment roll-in" data-fragment-index="4"><code data-trim contenteditable class="scala">
 inject [String] (identified by "db.host")
 inject [Int] (identified by "db.port")
         </code></pre>
@@ -406,12 +466,6 @@ inject [Int] (identified by "db.port")
       <section data-background="#78B8BC" data-transition="linear">
         <a href="http://akka.io/">
           <img src="my/img/akka.png" class="logo">
-        </a>
-      </section>
-
-      <section data-background="#78B8BC">
-        <a href="https://twitter.com/rolandkuhn/status/445832745554423809">
-          <img src="my/img/tweet.png" class="tweet">
         </a>
       </section>
 
@@ -482,6 +536,32 @@ class OrderModule extends Module {
         </code></pre>
       </section>
 
+      <section data-background="#F7A541" data-transition="linear">
+        <h2>Present&nbsp;&nbsp;&&nbsp;&nbsp;Future</h2>
+      </section>
+
+      <section data-background="#F7A541">
+        <h2>scaldi.org</h2>
+        <a href="http://scaldi.org">
+          <img src="my/img/website-screenshot.jpg" class="screenshot">
+        </a>
+      </section>
+
+      <section data-background="#F7A541">
+        <a href="http://skinny-framework.org/documentation/dependency-injection.html">
+          <img src="my/img/skinny-logo.png" class="screenshot-no-decor">
+        </a>
+      </section>
+
+      <section data-background="#F7A541">
+        <h2>Play 2.4 & 3.0</h2>
+
+        <ul>
+          <li class="fragment" data-fragment-index="1">Native DI mechanism</li>
+          <li class="fragment" data-fragment-index="2">JSR 330</li>
+        </ul>
+      </section>
+
       <section data-background="#F7A541" data-markdown data-transition="linear">
         <script type="text/template">
           ## More Information
@@ -495,7 +575,6 @@ class OrderModule extends Module {
             * [Scaldi Akka Example](https://typesafe.com/activator/template/scaldi-akka-example)
           * This presentation: <br>
             http://scaldi.github.io/scaldi-presentation
-
         </script>
       </section>
 
